@@ -1,0 +1,10 @@
+<aura:component implements="flexipage:availableForAllPageTypes" access="global">
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+
+    <lightning:card title="Canvas App in Aura">
+        <force:canvasApp
+            developerName="CanvasAppDemo"
+            width="100%"
+            height="200px" />
+    </lightning:card>
+</aura:component>

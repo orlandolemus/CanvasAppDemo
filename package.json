@@ -1,0 +1,14 @@
+{
+  "name": "canvas-app",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "copy-sdk": "cp ./node_modules/@salesforce/canvas-js-sdk/js/canvas-all.js ./public/canvas-all.js"
+  },
+  "dependencies": {
+    "@salesforce/canvas-js-sdk": "^1.41.0",
+    "body-parser": "^1.20.2",
+    "express": "^4.18.2"
+  }
+}
