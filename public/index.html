@@ -17,13 +17,12 @@
       document.getElementById("sendBtn").addEventListener("click", function () {
         console.log("Sending message...");
         if (Sfdc?.canvas?.client?.publish) {
-          Sfdc.canvas.client.publish({
+          Sfdc.canvas.client.publish(window.parent, {
             name: 'canvasToAuraEvent',
             payload: {
-              message: 'Hello from Canvas App!',
+              message: 'Hello from Canvas!',
               time: new Date().toISOString()
-            },
-            targetOrigin: "*" // or use Salesforce domain to be more secure
+            }
           });
         } else {
           console.warn('Canvas SDK publish() is not available.');
