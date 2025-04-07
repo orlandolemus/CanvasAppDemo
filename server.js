@@ -14,18 +14,23 @@ app.set('views', path.join(__dirname, 'public'));
 
 // Canvas signed request POST endpoint
 app.post('/', (req, res) => {
-  const signedRequest = req.body.signed_request;
-
-  if (!signedRequest) {
-    return res.status(400).send('Missing signed_request');
+  try{
+    const signedRequest = req.body.signed_request;
+  
+    if (!signedRequest) {
+      return res.status(400).send('Missing signed_request');
+    }
+  
+    const [sig, payload] = signedRequest.split('.');
+    const context = JSON.parse(Buffer.from(payload, 'base64').toString('utf8'));
+  
+    console.log('✔️ Canvas context:', context.context);
+  
+    res.render('index', { context });
+  }catch (err) {
+    console.error('❌ Error handling signed request:', err);
+    res.status(500).send('Internal Server Error');
   }
-
-  const [sig, payload] = signedRequest.split('.');
-  const context = JSON.parse(Buffer.from(payload, 'base64').toString('utf8'));
-
-  console.log('✔️ Canvas context:', context.context);
-
-  res.render('index', { context });
 });
 
 app.listen(PORT, () => {
