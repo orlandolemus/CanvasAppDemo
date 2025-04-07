@@ -6,6 +6,7 @@
   <script>
     const client = <%- JSON.stringify(context.client) %>;
     console.log("CLIENT: ", client);
+    Sfdc.canvas.client.init(client);
 
     function checkCanvasPublisherAvailability() {
       const canvasAvailable = (
@@ -41,7 +42,8 @@
         payload: {
           message: 'Hello from Canvas!',
           time: new Date().toISOString()
-        }
+        },
+        instanceId
       });
     }
 
