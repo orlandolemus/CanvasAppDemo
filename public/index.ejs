@@ -1,60 +1,77 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Salesforce Canvas App</title>
-
-  <!-- Salesforce Canvas SDK -->
-  <script src="https://na1.salesforce.com/canvas/sdk/js/publisher.js"></script>
-
-  <style>
-    body {
-      font-family: sans-serif;
-      padding: 2rem;
-    }
-
-    button {
-      padding: 0.75rem 1.5rem;
-      font-size: 1rem;
-      background-color: #0070d2;
-      color: white;
-      border: none;
-      border-radius: 0.3rem;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #005fb2;
-    }
-  </style>
-</head>
-<body>
-  <h1>Canvas App is Loaded</h1>
-  <p>This app is embedded in Salesforce and can send custom events to Aura!</p>
-
-  <button onclick="sendEvent()">Send Custom Event to Salesforce</button>
-
+  <title>Canvas App</title>
+  <script src="/canvas-all.js"></script>
   <script>
-    // Injected Canvas client context from server
     const client = <%- JSON.stringify(context.client) %>;
 
-    // Initialize SDK with client context
-    Sfdc.canvas.client.init(client);
+    function checkCanvasPublisherAvailability() {
+      const canvasAvailable = (
+        typeof Sfdc !== 'undefined' &&
+        Sfdc.canvas &&
+        Sfdc.canvas.publisher &&
+        typeof Sfdc.canvas.publisher.publish === 'function'
+      );
 
-    function sendEvent() {
-      const payload = {
-        message: 'Hello from Canvas App!',
-        time: new Date().toISOString()
-      };
+      if (!canvasAvailable) {
+        const btn = document.getElementById('sendEventBtn');
+        if (btn) {
+          btn.disabled = true;
+          btn.innerText = 'Unavailable outside Salesforce Canvas';
+          btn.style.backgroundColor = '#ccc';
+          btn.style.cursor = 'not-allowed';
+        }
 
-      Sfdc.canvas.client.publish(client, {
-        name: 'canvasToAuraEvent',
-        payload: payload
-      });
+        const msg = document.getElementById('canvasStatus');
+        if (msg) {
+          msg.innerHTML = '<strong style="color:red;">Canvas SDK not fully available.</strong><br>This page must be loaded inside Salesforce as a Canvas App.';
+        }
+      }
 
-      console.log("✅ Event sent to Salesforce:", payload);
+      return canvasAvailable;
     }
+
+    function sendCanvasEvent() {
+      if (!checkCanvasPublisherAvailability()) return;
+
+      Sfdc.canvas.publisher.publish({
+        name: 'customEventFromCanvas',
+        payload: {
+          message: 'Hello from Canvas!',
+          time: new Date().toISOString()
+        }
+      });
+    }
+
+    function subscribeToAuraEvents() {
+      if (
+        typeof Sfdc !== 'undefined' &&
+        Sfdc.canvas &&
+        Sfdc.canvas.client &&
+        typeof Sfdc.canvas.client.subscribe === 'function'
+      ) {
+        Sfdc.canvas.client.subscribe({ name: 'eventFromAura' }, function(event) {
+          const msg = document.getElementById('auraMsg');
+          if (msg) {
+            msg.innerText = 'Aura says: ' + event.payload.message;
+          }
+        });
+      }
+    }
+
+    window.onload = function () {
+      checkCanvasPublisherAvailability();
+      subscribeToAuraEvents();
+    };
   </script>
+</head>
+<body>
+  <h1>Salesforce Canvas App</h1>
+  <p id="canvasStatus">Canvas SDK loaded</p>
+  <button id="sendEventBtn" onclick="sendCanvasEvent()">Send Event to Salesforce</button>
+  <hr>
+  <p><strong>Status from Aura:</strong></p>
+  <p id="auraMsg">Waiting for message from Aura...</p>
 </body>
 </html>
