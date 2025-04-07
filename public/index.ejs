@@ -4,69 +4,71 @@
   <title>Canvas App</title>
   <script src="/canvas-all.js"></script>
   <script>
-    Sfdc.canvas.ready(function() {
-      const client = <%- JSON.stringify(context.client) %>;
-      console.log("CLIENT: ", client);
+    document.addEventListener("DOMContentLoaded", function () {
+      Sfdc.canvas.ready(function() {
+        const client = <%- JSON.stringify(context.client) %>;
+        console.log("CLIENT: ", client);
 
-      function checkCanvasPublisherAvailability() {
-        const canvasAvailable = (
-          typeof Sfdc !== 'undefined' &&
-          Sfdc.canvas &&
-          Sfdc.canvas.client &&
-          typeof Sfdc.canvas.client.publish === 'function'
-        );
+        function checkCanvasPublisherAvailability() {
+          const canvasAvailable = (
+            typeof Sfdc !== 'undefined' &&
+            Sfdc.canvas &&
+            Sfdc.canvas.client &&
+            typeof Sfdc.canvas.client.publish === 'function'
+          );
 
-        if (!canvasAvailable) {
-          const btn = document.getElementById('sendEventBtn');
-          if (btn) {
-            btn.disabled = true;
-            btn.innerText = 'Unavailable outside Salesforce Canvas';
-            btn.style.backgroundColor = '#ccc';
-            btn.style.cursor = 'not-allowed';
+          if (!canvasAvailable) {
+            const btn = document.getElementById('sendEventBtn');
+            if (btn) {
+              btn.disabled = true;
+              btn.innerText = 'Unavailable outside Salesforce Canvas';
+              btn.style.backgroundColor = '#ccc';
+              btn.style.cursor = 'not-allowed';
+            }
+
+            const msg = document.getElementById('canvasStatus');
+            if (msg) {
+              msg.innerHTML = '<strong style="color:red;">Canvas SDK not fully available.</strong><br>This page must be loaded inside Salesforce as a Canvas App.';
+            }
           }
 
-          const msg = document.getElementById('canvasStatus');
-          if (msg) {
-            msg.innerHTML = '<strong style="color:red;">Canvas SDK not fully available.</strong><br>This page must be loaded inside Salesforce as a Canvas App.';
-          }
+          return canvasAvailable;
         }
 
-        return canvasAvailable;
-      }
+        function sendCanvasEvent() {
+          if (!checkCanvasPublisherAvailability()) return;
 
-      function sendCanvasEvent() {
-        if (!checkCanvasPublisherAvailability()) return;
-
-        Sfdc.canvas.client.publish(client, {
-          name: 'customEventFromCanvas',
-          payload: {
-            message: 'Hello from Canvas!',
-            time: new Date().toISOString()
-          },
-          instanceId
-        });
-      }
-
-      function subscribeToAuraEvents() {
-        if (
-          typeof Sfdc !== 'undefined' &&
-          Sfdc.canvas &&
-          Sfdc.canvas.client &&
-          typeof Sfdc.canvas.client.subscribe === 'function'
-        ) {
-          Sfdc.canvas.client.subscribe({ name: 'eventFromAura' }, function(event) {
-            const msg = document.getElementById('auraMsg');
-            if (msg) {
-              msg.innerText = 'Aura says: ' + event.payload.message;
-            }
+          Sfdc.canvas.client.publish(client, {
+            name: 'customEventFromCanvas',
+            payload: {
+              message: 'Hello from Canvas!',
+              time: new Date().toISOString()
+            },
+            instanceId
           });
         }
-      }
 
-      window.onload = function () {
-        checkCanvasPublisherAvailability();
-        subscribeToAuraEvents();
-      };
+        function subscribeToAuraEvents() {
+          if (
+            typeof Sfdc !== 'undefined' &&
+            Sfdc.canvas &&
+            Sfdc.canvas.client &&
+            typeof Sfdc.canvas.client.subscribe === 'function'
+          ) {
+            Sfdc.canvas.client.subscribe({ name: 'eventFromAura' }, function(event) {
+              const msg = document.getElementById('auraMsg');
+              if (msg) {
+                msg.innerText = 'Aura says: ' + event.payload.message;
+              }
+            });
+          }
+        }
+
+        window.onload = function () {
+          checkCanvasPublisherAvailability();
+          subscribeToAuraEvents();
+        };
+      });
     });
   </script>
 </head>
