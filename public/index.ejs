@@ -5,7 +5,7 @@
   <script src="/canvas-all.js"></script>
   <script>
     document.addEventListener("DOMContentLoaded", function () {
-      Sfdc.canvas.ready(function() {
+      Sfdc.canvas.onReady(() => {
         const client = <%- JSON.stringify(context.client) %>;
         console.log("CLIENT: ", client);
 
