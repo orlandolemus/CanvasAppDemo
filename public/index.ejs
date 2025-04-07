@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Salesforce Canvas App</title>
+
+  <!-- Salesforce Canvas SDK -->
+  <script src="/canvas/sdk/js/canvas-all.js"></script>
+
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2rem;
+    }
+
+    button {
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      background-color: #0070d2;
+      color: white;
+      border: none;
+      border-radius: 0.3rem;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #005fb2;
+    }
+  </style>
+</head>
+<body>
+  <h1>Canvas App is Loaded</h1>
+  <p>This app is embedded in Salesforce and can send custom events to Aura!</p>
+
+  <button onclick="sendEvent()">Send Custom Event to Salesforce</button>
+
+  <script>
+    // Injected Canvas client context from server
+    const client = <%- JSON.stringify(context.client) %>;
+
+    // Initialize SDK with client context
+    Sfdc.canvas.client.init(client);
+
+    function sendEvent() {
+      const payload = {
+        message: 'Hello from Canvas App!',
+        time: new Date().toISOString()
+      };
+
+      Sfdc.canvas.client.publish(client, {
+        name: 'canvasToAuraEvent',
+        payload: payload
+      });
+
+      console.log("✅ Event sent to Salesforce:", payload);
+    }
+  </script>
+</body>
+</html>
