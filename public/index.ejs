@@ -39,7 +39,6 @@
           const client = <%- JSON.stringify(context.client) %>;
           console.log("CLIENT: ", client);
 
-          Sfdc.canvas(function() {
             Sfdc.canvas.client.publish(client.client, {
               name: 'customEventFromCanvas',
               payload: {
@@ -48,7 +47,6 @@
               },
               instanceId
             });
-          });
         }
 
         function subscribeToAuraEvents() {
@@ -58,14 +56,12 @@
             Sfdc.canvas.client &&
             typeof Sfdc.canvas.client.subscribe === 'function'
           ) {
-            Sfdc.canvas(function() {
               Sfdc.canvas.client.subscribe({ name: 'eventFromAura' }, function(event) {
                 const msg = document.getElementById('auraMsg');
                 if (msg) {
                   msg.innerText = 'Aura says: ' + event.payload.message;
                 }
               });
-            });
           }
         }
 
