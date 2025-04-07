@@ -4,10 +4,8 @@
   <title>Canvas App</title>
   <script src="/canvas-all.js"></script>
   <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      Sfdc.canvas.onReady(() => {
-        const client = <%- JSON.stringify(context.client) %>;
-        console.log("CLIENT: ", client);
+      
+        
 
         function checkCanvasPublisherAvailability() {
           const canvasAvailable = (
@@ -38,13 +36,18 @@
         function sendCanvasEvent() {
           if (!checkCanvasPublisherAvailability()) return;
 
-          Sfdc.canvas.client.publish(client, {
-            name: 'customEventFromCanvas',
-            payload: {
-              message: 'Hello from Canvas!',
-              time: new Date().toISOString()
-            },
-            instanceId
+          const client = <%- JSON.stringify(context.client) %>;
+          console.log("CLIENT: ", client);
+
+          Sfdc.canvas(function() {
+            Sfdc.canvas.client.publish(client.client, {
+              name: 'customEventFromCanvas',
+              payload: {
+                message: 'Hello from Canvas!',
+                time: new Date().toISOString()
+              },
+              instanceId
+            });
           });
         }
 
@@ -55,11 +58,13 @@
             Sfdc.canvas.client &&
             typeof Sfdc.canvas.client.subscribe === 'function'
           ) {
-            Sfdc.canvas.client.subscribe({ name: 'eventFromAura' }, function(event) {
-              const msg = document.getElementById('auraMsg');
-              if (msg) {
-                msg.innerText = 'Aura says: ' + event.payload.message;
-              }
+            Sfdc.canvas(function() {
+              Sfdc.canvas.client.subscribe({ name: 'eventFromAura' }, function(event) {
+                const msg = document.getElementById('auraMsg');
+                if (msg) {
+                  msg.innerText = 'Aura says: ' + event.payload.message;
+                }
+              });
             });
           }
         }
@@ -68,8 +73,7 @@
           checkCanvasPublisherAvailability();
           subscribeToAuraEvents();
         };
-      });
-    });
+      
   </script>
 </head>
 <body>
