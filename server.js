@@ -14,14 +14,17 @@ app.post('/', (req, res) => {
   const signedRequest = req.body.signed_request;
 
   if (!signedRequest) {
+    console.error('No signed_request received!');
     return res.status(400).send('Missing signed_request');
   }
 
+  // Optional: decode it if needed
   const [sig, payload] = signedRequest.split('.');
   const context = JSON.parse(Buffer.from(payload, 'base64').toString('utf8'));
 
-  console.log('✔️ Canvas context:', context.context);
+  console.log('Canvas context received:', context);
 
+  // Serve your app
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
