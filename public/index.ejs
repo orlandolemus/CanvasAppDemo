@@ -5,13 +5,14 @@
   <script src="/canvas-all.js"></script>
   <script>
     const client = <%- JSON.stringify(context.client) %>;
+    console.log("CLIENT: ", client);
 
     function checkCanvasPublisherAvailability() {
       const canvasAvailable = (
         typeof Sfdc !== 'undefined' &&
         Sfdc.canvas &&
-        Sfdc.canvas.publisher &&
-        typeof Sfdc.canvas.publisher.publish === 'function'
+        Sfdc.canvas.client &&
+        typeof Sfdc.canvas.client.publish === 'function'
       );
 
       if (!canvasAvailable) {
@@ -35,7 +36,7 @@
     function sendCanvasEvent() {
       if (!checkCanvasPublisherAvailability()) return;
 
-      Sfdc.canvas.publisher.publish({
+      Sfdc.canvas.client.publish(client, {
         name: 'customEventFromCanvas',
         payload: {
           message: 'Hello from Canvas!',
