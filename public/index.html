@@ -28,11 +28,11 @@
         } else {
           console.warn('Canvas SDK publish() is not available.');
         }
-        Sfdc.canvas.controller.publish({
-          name: 'canvasToAuraEvent', // Event name
-          payload: { data: 'Some Data' } // Event payload
-          //target: { canvas: 'targetCanvasAppId' } // Target Canvas App ID
-        });
+        // Sfdc.canvas.client.publish({
+        //   name: 'canvasToAuraEvent', // Event name
+        //   payload: { data: 'Some Data' } // Event payload
+        //   //target: { canvas: 'targetCanvasAppId' } // Target Canvas App ID
+        // });
         /*window.parent.postMessage({
           type: "canvas-iframe-message",
           payload: {
