@@ -5,11 +5,14 @@ const bodyParser = require('body-parser');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(bodyParser.urlencoded({ extended: false })); // required for signed_request
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
-// Canvas signed request route
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'public'));
+
+// Canvas signed request POST endpoint
 app.post('/', (req, res) => {
   const signedRequest = req.body.signed_request;
 
@@ -22,7 +25,7 @@ app.post('/', (req, res) => {
 
   console.log('✔️ Canvas context:', context.context);
 
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.render('index', { context });
 });
 
 app.listen(PORT, () => {
