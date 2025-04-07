@@ -12,6 +12,11 @@ app.use(express.static('public'));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'public'));
 
+app.get('/', (req, res) => {
+  res.send('This endpoint expects a POST request with a signed_request from Salesforce Canvas.');
+});
+
+
 // Canvas signed request POST endpoint
 app.post('/', (req, res) => {
   try{
