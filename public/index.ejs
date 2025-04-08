@@ -8,7 +8,7 @@
     // Optionally wait for Canvas to be ready
     Sfdc.canvas.onReady(() => {
       console.log("Canvas SDK Ready");
-      const client = JSON.parse('<%=signedRequestJson%>');
+      const client = <%- JSON.stringify(context.client) %>;
       console.log("CLIENT: ", client);
 
       Sfdc.canvas.client.publish(client, {
@@ -22,7 +22,7 @@
 
     //Subscribe to the parent window onscroll event.
     Sfdc.canvas(function() {
-      sr = JSON.parse('<%=signedRequestJson%>');
+      sr = JSON.parse('<%=context%>');
       // Capture the onScrolling event of the parent window
       Sfdc.canvas.client.subscribe(sr.client,
           {name : 'canvas.scroll', onData : function (event) {
@@ -37,14 +37,14 @@
     });
 
     Sfdc.canvas(function() {
-      sr = JSON.parse('<%=signedRequestJson%>');
+      sr = JSON.parse('<%=context%>');
       Sfdc.canvas.client.publish(sr.client,
           {name : "customEventFromCanvas", payload : {status : 'Completed'}});
     });
 
     function sendCanvasEvent(){
       console.log("Canvas SDK Ready");
-      const client = JSON.parse('<%=signedRequestJson%>');
+      const client = JSON.parse('<%=context%>');
       console.log("CLIENT: ", client);
 
       Sfdc.canvas.client.publish(client, {
