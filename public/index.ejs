@@ -22,9 +22,9 @@
 
     //Subscribe to the parent window onscroll event.
     Sfdc.canvas(function() {
-      sr = JSON.parse('<%=context%>');
+      const client = <%- JSON.stringify(context.client) %>;
       // Capture the onScrolling event of the parent window
-      Sfdc.canvas.client.subscribe(sr.client,
+      Sfdc.canvas.client.subscribe(client,
           {name : 'canvas.scroll', onData : function (event) {
               console.log("Parent's contentHeight; " + event.heights.contentHeight);
               console.log("Parent's pageHeight; " + event.heights.pageHeight);
@@ -37,14 +37,14 @@
     });
 
     Sfdc.canvas(function() {
-      sr = JSON.parse('<%=context%>');
-      Sfdc.canvas.client.publish(sr.client,
+      const client = <%- JSON.stringify(context.client) %>;
+      Sfdc.canvas.client.publish(client,
           {name : "customEventFromCanvas", payload : {status : 'Completed'}});
     });
 
     function sendCanvasEvent(){
       console.log("Canvas SDK Ready");
-      const client = JSON.parse('<%=context%>');
+      const client = <%- JSON.stringify(context.client) %>;
       console.log("CLIENT: ", client);
 
       Sfdc.canvas.client.publish(client, {
