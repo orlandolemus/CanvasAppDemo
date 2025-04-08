@@ -16,7 +16,8 @@
         payload: {
           message: 'Hello from Canvas!',
           time: new Date().toISOString()
-        }
+        },
+        targetOrigin: "*"
       });
     });
 
@@ -38,8 +39,11 @@
 
     Sfdc.canvas(function() {
       const client = <%- JSON.stringify(context.client) %>;
-      Sfdc.canvas.client.publish(client,
-          {name : "customEventFromCanvas", payload : {status : 'Completed'}});
+      Sfdc.canvas.client.publish(client, {
+        name : "customEventFromCanvas", 
+        payload : {status : 'Completed'},
+        targetOrigin: "*"
+      });
     });
 
     function sendCanvasEvent(){
@@ -52,14 +56,32 @@
         payload: {
           message: 'Hello from Canvas!',
           time: new Date().toISOString()
-        }
+        },
+          targetOrigin: "*"
       });
     }
+
+    Sfdc.canvas.onReady(function() {
+      document.getElementById("sendEvent").addEventListener("click", () => {
+        console.log("Canvas SDK Ready");
+        const client = <%- JSON.stringify(context.client) %>;
+        console.log("CLIENT: ", client);
+        Sfdc.canvas.client.publish(client, {
+          name: "customEventFromCanvas",
+          payload: {
+            message: "Hello Aura!",
+            time: new Date().toISOString()
+          },
+          targetOrigin: "*"
+        });
+      });
+    });
   </script>
 </head>
 <body>
   <h1>Salesforce Canvas App</h1>
   <p id="canvasStatus">Canvas SDK loaded</p>
+  <button id="sendEvent">Send Event to Aura</button>
   <button id="sendEventBtn" onclick="sendCanvasEvent()">Send Event to Salesforce</button>
   <!-- <hr>
   <p><strong>Status from Aura:</strong></p>
