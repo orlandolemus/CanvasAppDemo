@@ -19,6 +19,20 @@
         }
       });
     });
+
+    function sendCanvasEvent(){
+      console.log("Canvas SDK Ready");
+      const client = <%- JSON.stringify(context.client) %>;
+      console.log("CLIENT: ", client);
+
+      Sfdc.canvas.client.publish(client, {
+        name: 'customEventFromCanvas',
+        payload: {
+          message: 'Hello from Canvas!',
+          time: new Date().toISOString()
+        }
+      });
+    }
   </script>
 </head>
 <body>
